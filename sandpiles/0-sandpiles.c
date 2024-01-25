@@ -30,29 +30,40 @@ int is_stable(int grid[3][3]) {
     return 0;
 }
 
-int tupple(int grid[3][3]) {
+void tupple(int grid[3][3]) {
+
+    int tmp[3][3] = {
+        {0, 0, 0},
+        {0, 0, 0},
+        {0, 0, 0}
+
+    };
+
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
             if (grid[i][j] > 3) {
-                grid[i][j] -= 4;
-                if (i - 1 >= 0) {
-                    grid[i-1][j] += 1;
+                tmp[i][j] -= 4;
+                if (i >= 1) {
+                    tmp[i-1][j] += 1;
                 }
-                if (i + 1 < 3) {
-                    grid[i+1][j] += 1;
+                if (i <= 1) {
+                    tmp[i+1][j] += 1;
                 }
-                if (j - 1 >= 0) {
-                    grid[i][j-1] += 1;
+                if (j >= 1) {
+                    tmp[i][j-1] += 1;
                 }
-                if (j + 1 < 3) {
-                    grid[i][j+1] += 1;
+                if (j <= 1) {
+                    tmp[i][j+1] += 1;
                 }
+            
             }
         }
     }
-    // Note: Accessing grid[3][3] is invalid; you might want to return a meaningful value.
-    // For example, you could return grid[2][2], which is the last element in the 3x3 array.
-    return grid[3][3];
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            grid[i][j] = grid[i][j] + tmp[i][j];
+        }
+    }
 }
 
 void sandpiles_sum(int grid1[3][3], int grid2[3][3]) {
@@ -62,9 +73,10 @@ void sandpiles_sum(int grid1[3][3], int grid2[3][3]) {
         }
     }
     while (is_stable(grid1) == 1) {
-        grid1[3][3] = tupple(grid1);
         print_grid(grid1);
         printf("=\n");
+        tupple(grid1);
+        
     }
 }
 
