@@ -1,99 +1,126 @@
-// Header file inclusion
-#include "sandpiles.h"
+#include <stdlib.h>
 #include <stdio.h>
+#include <stdbool.h>
 
-// Function to print the sandpile grid
-static void print_grid(int grid[3][3])
+#include "sandpiles.h"
+
+/**
+ * print_grid2 - prints a 3x3 grid of integers.
+ * @grid: The parameter "grid" is a 2-dimensional array of
+ * integers with dimensions 3x3.
+ */
+void print_grid2(int grid[3][3])
 {
-    int i, j;
+	int i, j;
 
-    // Nested loops to iterate through each element in the grid
-    for (i = 0; i < 3; i++)
-    {
-        for (j = 0; j < 3; j++)
-        {
-            // Print a space before each element (except the first in the row)
-            if (j)
-                printf(" ");
-            // Print the current element value
-            printf("%d", grid[i][j]);
-        }
-        // Move to the next line after each row
-        printf("\n");
-    }
+	for (i = 0; i < 3; i++)
+	{
+		for (j = 0; j < 3; j++)
+		{
+			if (j)
+				printf(" ");
+			printf("%d", grid[i][j]);
+		}
+		printf("\n");
+	}
 }
 
-// Function to check if the sandpile is stable (no cell value > 3)
-int is_stable(int grid[3][3]) {
-    // Nested loops to iterate through each element in the grid
-    for (int i = 0; i < 3; i++) {
-        for (int j = 0; j < 3; j++) {
-            // If any cell value is greater than 3, the sandpile is not stable
-            if (grid[i][j] > 3) {
-                return 1;
-            }
-        }
-    }
-    // If no cell value is greater than 3, the sandpile is stable
-    return 0;
+/**
+ * sandpiles_sum - takes two 3x3 grids as input
+ * adds them together, and then performs
+ * toppling operations on the resulting grid until all values
+ * are less than or equal to 3.
+ * @grid1: A 3x3 integer array representing the first sandpile grid.
+ * @grid2: The `grid2` parameter is a 2D array of integers with dimensions 3x3.
+ * It represents the second sandpile grid that will be added to the first grid
+ * (`grid1`) in the `sandpiles_sum` function.
+ */
+void sandpiles_sum(int grid1[3][3], int grid2[3][3])
+{
+	int i, j;
+
+	add_matrix(grid1, grid2);
+
+	for (i = 0; i < 3; i++)
+	{
+		for (j = 0; j < 3; j++)
+		{
+			if (grid1[i][j] > 3)
+			{
+				printf("=\n");
+				print_grid2(grid1);
+				toppling(grid1);
+
+				i = 0;
+				j = 0;
+			}
+		}
+	}
 }
 
-// Function to perform a topple operation on the sandpile grid
-void tupple(int grid[3][3]) {
-    // Temporary array to store the result of the topple operation
-    int tmp[3][3] = {
-        {0, 0, 0},
-        {0, 0, 0},
-        {0, 0, 0}
-    };
+/**
+ * toppling - takes a 3x3 grid as input and performs a toppling
+ * operation on each element
+ * of the grid, reducing the value by 4 and distributing the excess to
+ * neighboring elements.
+ * @grid1: The parameter `grid1` is a 2-dimensional array of integers
+ * with dimensions 3x3.
+ */
+void toppling(int grid1[3][3])
+{
+	int i, j;
 
-    // Nested loops to iterate through each element in the grid
-    for (int i = 0; i < 3; i++) {
-        for (int j = 0; j < 3; j++) {
-            // If the cell value is greater than 3, perform the topple operation
-            if (grid[i][j] > 3) {
-                // Decrease the current cell value by 4
-                tmp[i][j] -= 4;
-                // Increment neighboring cells if they are within the grid bounds
-                if (i >= 1) {
-                    tmp[i-1][j] += 1;
-                }
-                if (i <= 1) {
-                    tmp[i+1][j] += 1;
-                }
-                if (j >= 1) {
-                    tmp[i][j-1] += 1;
-                }
-                if (j <= 1) {
-                    tmp[i][j+1] += 1;
-                }
-            }
-        }
-    }
+	int gridTemp[3][3] = {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
 
-    // Update the original grid by adding the results of the topple operation
-    for (int i = 0; i < 3; i++) {
-        for (int j = 0; j < 3; j++) {
-            grid[i][j] = grid[i][j] + tmp[i][j];
-        }
-    }
+	for (i = 0; i < 3; i++)
+	{
+		for (j = 0; j < 3; j++)
+		{
+			if (grid1[i][j] > 3)
+			{
+				grid1[i][j] = grid1[i][j] - 4;
+
+				if (i - 1 >= 0)
+				{
+					gridTemp[i - 1][j]++;
+				}
+				if (j - 1 >= 0)
+				{
+					gridTemp[i][j - 1]++;
+				}
+				if (j + 1 < 3)
+				{
+					gridTemp[i][j + 1]++;
+				}
+				if (i + 1 < 3)
+				{
+					gridTemp[i + 1][j]++;
+				}
+			}
+		}
+	}
+	add_matrix(grid1, gridTemp);
 }
 
-// Function to compute the sum of two sandpile grids and stabilize the result
-void sandpiles_sum(int grid1[3][3], int grid2[3][3]) {
-    // Add corresponding elements of grid2 to grid1
-    for (int i = 0; i < 3; i++) {
-        for (int j = 0; j < 3; j++) {
-            grid1[i][j] += grid2[i][j];
-        }
-    }
+/**
+ * add_matrix - takes two 3x3 matrices as input and adds
+ * them element-wise, modifying the first matrix.
+ *
+ * @grid1: A 2D array of integers representing the first matrix.
+ * @grid2: The parameter `grid2` is a 2-dimensional array of integers with
+ * dimensions 3x3.
+ * It represents the second matrix that will be added to the first matrix
+ * (`grid1`).
+ */
+void add_matrix(int grid1[3][3], int grid2[3][3])
+{
+	int i, j;
 
-    // Perform topple operations until the resulting sandpile is stable
-    while (is_stable(grid1) == 1) {
-        // Print the current state of the sandpile
-        printf("=\n");
-        print_grid(grid1);
-        // Perform a topple operation on the sandpile
-        tupple(grid1);
-    }
+	for (i = 0; i < 3; i++)
+	{
+		for (j = 0; j < 3; j++)
+		{
+			grid1[i][j] = grid1[i][j] + grid2[i][j];
+		}
+	}
 }
