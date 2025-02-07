@@ -1,0 +1,1 @@
+README of Valentin RALLIARD for linked_list_palyndrome project at Holberton School
