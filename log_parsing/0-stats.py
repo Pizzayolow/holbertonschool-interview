@@ -1,9 +1,15 @@
 #!/usr/bin/python3
 
-""" Read stdin and formats data """
+""" 
+Read stdin and formats data ALLO ITS DOCUMENTED FFS
+"""
 
 import signal
 import sys
+
+""" 
+Read stdin and formats data ALLO ITS DOCUMENTED FFS
+"""
 
 # Variables initialisations
 line_count = 0
