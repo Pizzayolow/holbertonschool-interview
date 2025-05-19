@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-"""Read stdin and formats data"""
+""" Read stdin and formats data """
 
 import signal
 import sys
